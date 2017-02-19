@@ -43,6 +43,8 @@ module_list = [
 # }
 
 # check in file project
+
+
 def module_exists(module_name):
     # import sys
     if not module_name in sys.modules.keys():
@@ -73,11 +75,9 @@ def module_exists_OFF(module_name):
 def module_import(module_list):
     for item in module_list:
         # debug_echo("%s -> %s" % ("import", item))
-        module_exists( item )
+        module_exists(item)
         # print ( "%s -> %s" % (item, module_list[item]) )
         # module_exists( module_list[item] )
-
-
 
 
 def debug_echo(msg):
@@ -172,7 +172,7 @@ def mailRss(url):
             ed += "s"
 
         debug_echo(' ' + fullcount)
-        sendNoti('Gmail', fullcount +' '+ ed)
+        sendNoti('Gmail', fullcount + ' ' + ed)
 
         openRssLink(contents)
 
@@ -196,8 +196,8 @@ def checkInetConnect():
         return True
     else:
         debug_echo(hostname + ' is down!')
-        debug_echo("Trying to reconnect in %s seconds" % reconnect_sec )
-        time.sleep( reconnect_sec )
+        debug_echo("Trying to reconnect in %s seconds" % reconnect_sec)
+        time.sleep(reconnect_sec)
         return checkInetConnect()
         # return threading.Timer(2, check_inet).start()
 
@@ -211,8 +211,8 @@ def main():
 
         inet_connect = checkInetConnect()
         if inet_connect == True:
-            mailurl = getConfig( configFilePath )
-            mailRss( mailurl )
+            mailurl = getConfig(configFilePath)
+            mailRss(mailurl)
 
     except IOError as err:
         # print("I/O error: {0}".format(err))
