@@ -16,6 +16,9 @@ Opportunities and script logic:
 ```
 sudo pip install configparser feedparser furl
 ```
+```
+sudo pacman -S python-feedparser python2-configparser python-pip
+```
 
 ### Installation Instructions
 1. Copy file [gmail.py](/gmail.py) OR repo `$ git clone https://github.com/Artlant/gmail-check.git`
