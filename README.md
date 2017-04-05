@@ -25,6 +25,17 @@ sudo pip install configparser feedparser furl
 5. Change in file `gmail.py` variable `configFilePath` from you path conf
 6. (optional) Change variable `DEBUG_MODE` = `True`/`False`  in `gmail.py`
 
+### Start arguments
+```
+./gmail.py -h
+usage: gmail.py [-h] [-l] [-c CONFIG]
+
+optional arguments:
+  -h, --help              show this help message and exit
+  -l, --log               show log info
+  -c file, --config file  patch to a config file
+```
+
 __//period call script should be implemented you__. For example in linux:
 ```
 watch -n 300./gmail.py
