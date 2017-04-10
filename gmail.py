@@ -174,10 +174,14 @@ def parse_config(CONFIG_PATH="./gmail_config.cfg", CONFIG_SECTION='profile'):
 def get_mail_url(USER, PWD):
     return 'https://%s:%s@mail.google.com/mail/feed/atom' % (USER, PWD)
 
-
-def send_noti(HEAD="mail notify", MSG="test"):
+def send_noti(HEAD="mail notify", MSG="test", LEVEL="low"):
+    level = {
+        LEVEL == 'low'      : "low",
+        LEVEL == 'normal'   : "normal",
+        LEVEL == 'critical' : "critical"
+    }[True]
     # import os
-    return os.system('notify-send "' + HEAD + '" "' + MSG + '" -u low')
+    return os.system('notify-send "' + HEAD + '" "' + MSG + '" -u ' + level)
     # os.system('notify-send "Gmail" "new '+fullcount+' '+ed+'" --urgency=low --icon=mail-forward')
 
 
@@ -212,7 +216,7 @@ def open_rss_link(URL):
     # return entry.link
 
 
-def get_count_gmail(URL):
+def get_gmail(URL):
     # from urllib.request import FancyURLopener
 
     opener = FancyURLopener()
@@ -231,17 +235,19 @@ def get_count_gmail(URL):
         if int(fullcount) > 1:
             ed += "s"
 
-        debug_echo(" " + fullcount)
-
         send_noti("Gmail", fullcount + " " + ed)
         # send_noti("Gmail", "new "+fullcount +" "+ ed)
+        debug_echo(" " + fullcount)
 
-        open_rss_link(contents)
+        return contents
 
     elif int(fullcount) != 0:
         print("gmail format xml is changed")
+        send_noti("Gmail Fatal error:", "gmail format xml is changed", "critical")
     else:
         debug_echo("not found new mail")
+
+    return False
 
 
 def check_inet_connect(IP="8.8.8.8"):
@@ -261,7 +267,8 @@ def check_inet_connect(IP="8.8.8.8"):
         debug_echo("Trying to reconnect in %s seconds" % RECONNECT_SEC)
         time.sleep(RECONNECT_SEC)
         # return check_inet_connect()
-        check_inet_connect()
+        # return False
+        check_inet_connect(IP)
         # return threading.Timer(2, check_inet).start()
 
 
@@ -271,21 +278,22 @@ def main():
         module_import(MODULE_LIST_DEPENDENCE)
         debug_echo("Working...")
 
-        inet_connect = check_inet_connect()
         if check_inet_connect():
-            # if inet_connect:
             mail_url = parse_config(CONFIG_PATH)
-            get_count_gmail(mail_url)
+            new_gmail = get_gmail(mail_url)
+            # print(new_gmail)
+            if new_gmail:
+                open_rss_link(new_gmail)
 
     except IOError as e:
         # print("I/O error: {0}".format(e))
         raise print("IOError error")
     except KeyboardInterrupt:
         return print("Keyboard: interruption")
-    except:
-    	print("Fatal error:", sys.exc_info()[0])
-    	sys.exit(33)
-    	raise
+    # except:
+    # 	print("Fatal error:", sys.exc_info()[0])
+    # 	sys.exit(33)
+    # 	raise
     # else:
         # print('else!')
     finally:
