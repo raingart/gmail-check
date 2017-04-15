@@ -18,6 +18,10 @@ sudo pip install configparser feedparser furl
 ```
 
 ### Installation Instructions
+```
+python setup.py install
+```
+OR
 1. Copy file [gmail.py](/gmail.py) OR repo `$ git clone https://github.com/Artlant/gmail-check.git`
 2. Make sure the script is executable by running `chmod +x ./gmail.py`
 3. Run `$ ./gmail.py`
