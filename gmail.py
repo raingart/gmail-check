@@ -214,7 +214,7 @@ def check_inet_connect(IP="8.8.8.8"):
 
 def main():
     try:
-        print("")
+        #  print("")
         get_args()
         module_import(MODULE_LIST_DEPENDENCE)
         debug_echo("Working...")
@@ -225,10 +225,11 @@ def main():
             # print(new_gmail)
             if new_gmail:
                 open_rss_link(new_gmail)
+		
+        print("")
 
     except IOError as e:
-        # print("I/O error: {0}".format(e))
-        raise print("IOError error")
+        print("I/O error: {0}".format(e))
     except KeyboardInterrupt:
         return print("Keyboard: interruption")
     # except:
