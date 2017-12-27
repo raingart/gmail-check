@@ -28,6 +28,7 @@ OR
 4. Change in `gmail_config.cfg` you `login` and `pass` from gmail account
 5. Change in file `gmail.py` variable `configFilePath` from you path conf
 6. (optional) Change variable `DEBUG_MODE` = `True`/`False`  in `gmail.py`
+7. open https://myaccount.google.com/lesssecureapps and set `Allow less secure apps: ON`
 
 ### Start arguments
 ```
