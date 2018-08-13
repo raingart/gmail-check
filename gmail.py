@@ -18,7 +18,7 @@ import configparser
 import argparse
 import feedparser
 import webbrowser
-from furl import furl
+from urllib import parse
 from urllib.request import FancyURLopener
 
 
@@ -31,7 +31,6 @@ MODULE_LIST_DEPENDENCE = [
     "argparse",
     "feedparser",
     "webbrowser",
-    "furl",
     "urllib"
 ]
 
@@ -139,6 +138,7 @@ def open_rss_link(URL):
     # import feedparser
     # import webbrowser
     # from furl import furl
+from urllib import parse
     rss = feedparser.parse(URL)
     count = 0
     max_open_email = 8
@@ -148,10 +148,9 @@ def open_rss_link(URL):
         debug_echo("Title: %s" % entry.title)
         debug_echo("link: %s" % entry.link)
 
-        f = furl(entry.link)
-        message_id = f.args['message_id']
-
-        debug_echo("link: %s" % f.args['message_id'])
+        f = parse.parse_qsl(parse.urlsplit(entry.link).query)
+        message_id = dict(f)['message_id']
+      #   debug_echo("message_id: %s" % message_id)
 
         # webbrowser.open_new_tab(entry.link)
         webbrowser.open_new_tab(
@@ -183,6 +182,7 @@ def get_gmail(URL):
             ed += "s"
 
         send_noti("Gmail", "%s %s" % (fullcount, ed))
+        #  debug_echo(" %s" % fullcount)
         debug_echo(" %s" % fullcount)
         return contents
 
@@ -195,43 +195,44 @@ def get_gmail(URL):
     return False
 
 
-def check_inet_connect(IP="8.8.8.8"):
-    # import os
-    # import time
-    ## import threading
-    hostname = "network"
-    reconnect_sec = 10
-    response = os.system('ping -c 3 %s -c1 >/dev/null 2>&1' % IP)
+# def check_inet_connect(IP="8.8.8.8"):
+#     # import os
+#     # import time
+#     ## import threading
+#     hostname = "network"
+#     reconnect_sec = 10
+#     response = os.system('ping -c 3 %s -c1 >/dev/null 2>&1' % IP)
 
-    if int(response) == 0:
-        debug_echo(hostname + " is up!")
-        return True
-    else:
-        debug_echo(hostname + " is down!")
-        debug_echo("Trying to reconnect in %s seconds" % reconnect_sec)
-        time.sleep(reconnect_sec)
-        check_inet_connect(IP)
+#     if int(response) == 0:
+#         debug_echo(hostname + " is up!")
+#         return True
+#     else:
+#         debug_echo(hostname + " is down!")
+#         debug_echo("Trying to reconnect in %s seconds" % reconnect_sec)
+#         time.sleep(reconnect_sec)
+#         check_inet_connect(IP)
 
 def main():
     try:
-        #  print("")
         get_args()
         module_import(MODULE_LIST_DEPENDENCE)
         debug_echo("Working...")
 
-        if check_inet_connect():
-            mail_url = parse_config(CONFIG_PATH)
-            new_gmail = get_gmail(mail_url)
-            # print(new_gmail)
-            if new_gmail:
-                open_rss_link(new_gmail)
-		
-        print("")
+        #  if check_inet_connect():
+        mail_url = parse_config(CONFIG_PATH)
+        new_gmail = get_gmail(mail_url)
+	# print(new_gmail)
+        if new_gmail:
+           open_rss_link(new_gmail)
+        #  else:
+            #  main()
 
     except IOError as e:
-        print("I/O error: {0}".format(e))
+        #  print("I/O error: {0}".format(e))
+        print("I/O error: {0}")
     except KeyboardInterrupt:
         return print("Keyboard: interruption")
+        #  print(" shutting down...")
     # except:
     # 	print("Fatal error:", sys.exc_info()[0])
     # 	sys.exit(33)
@@ -239,6 +240,7 @@ def main():
     # else:
         # print('else!')
     finally:
+        print("")
         debug_echo("done!")
         sys.exit()
 

@@ -7,22 +7,13 @@ Opportunities and script logic:
 - And the opening new mail/s in a browser
 
 ### Requirements
-> - python => 2.0
+> - python => 3.0
   - configparser
   - feedparser
   - urllib
-  - furl
-
-```
-sudo pip install configparser feedparser furl
-```
 
 ### Installation Instructions
-```
-python setup.py install
-```
-OR
-1. Copy file [gmail.py](/gmail.py) OR repo `$ git clone https://github.com/Artlant/gmail-check.git`
+1. Copy file [gmail.py](/gmail.py)
 2. Make sure the script is executable by running `chmod +x ./gmail.py`
 3. Run `$ ./gmail.py`
 4. Change in `gmail_config.cfg` you `login` and `pass` from gmail account
