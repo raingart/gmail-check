@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # _Settings____________________________________________________________________
-#  CONFIG_PATH = ('~/.local/gmail.cfg')
+CONFIG_PATH = ('~/.local/gmail.cfg')
 #  MAX_OPEN_EMAIL = 5
 # _____________________________________________________________________________
 
@@ -52,7 +52,9 @@ def parse_config(PATH="./gmail.cfg", CONFIG_SECTION='profile'):
         config_file = configparser.ConfigParser()
         config_file.read(CONFIG_PATH)
 
+        global user
         user = config_file.get(CONFIG_SECTION, 'user')
+        global passwd
         passwd = config_file.get(CONFIG_SECTION, 'passwd')
 
         logging.info("reading config file: %s" % CONFIG_PATH)
@@ -80,13 +82,12 @@ def send_noti(HEAD="mail notify", MSG="test", LEVEL="low"):
 
 def open_rss_link(URL):
    #  import feedparser
-    rss = feedparser.parse(URL)
-
-    global MAX_OPEN_EMAIL
     try:
        if not int(MAX_OPEN_EMAIL) > 1:
          MAX_OPEN_EMAIL = 10
     except NameError: MAX_OPEN_EMAIL = 10
+    
+    rss = feedparser.parse(URL)
     
     logging.info("Feed Title %s" % rss.feed.title)
     
@@ -110,8 +111,19 @@ def open_rss_link(URL):
 
 
 def get_gmail(URL):
-    contents = requests.get(URL).text
-
+    #  import requests
+    r = requests.get(URL)
+       
+    if r.status_code == 401:
+       logging.warning("login [%s] or password [%s] is incorrect\n%s" %
+       (user, passwd, 'Also try enable "Allow less secure apps" on https://myaccount.google.com/lesssecureapps'))
+       return False
+       
+    elif r.status_code != 200:
+       logging.warning("Requests error [%s] - %s" % (r.status_code, URL))
+       return False
+       
+    contents = r.text
     ifrom=contents.index('<fullcount>') + 11
     ito=contents.index('</fullcount>')
 
@@ -123,14 +135,14 @@ def get_gmail(URL):
             ed += "s"
 
         #  send_noti("Gmail", "%s %s" % (fullcount, ed))
-        logging.info(" %s" % fullcount)
+        print(" %s" % fullcount)
         return contents
 
     elif int(fullcount) != 0:
-        logging.error("gmail format xml is changed")
+        logging.critical("gmail format xml is changed")
         send_noti("Gmail error:", "xml format is broken", "critical")
     else:
-        logging.info("not found new mail")
+        logging.info("new mail not found")
 
     return False
 
@@ -139,11 +151,12 @@ def main():
         get_args()
         logging.info("Working...")
         mail_url=parse_config()
-        new_gmail=get_gmail(mail_url)
-        if new_gmail:
-            open_rss_link(new_gmail)
+        if mail_url:
+            new_gmail=get_gmail(mail_url)
+            if new_gmail:
+                open_rss_link(new_gmail)
             
-        logging.info("done!")
+        logging.info("completed.")
 
     except IOError as e:
         print("I/O error: ".format(e))
