@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # _Settings____________________________________________________________________
-CONFIG_PATH = ('~/.local/gmail.cfg')
+#  CONFIG_PATH = ('~/.local/gmail.cfg')
 #  MAX_OPEN_EMAIL = 5
 # _____________________________________________________________________________
 
@@ -115,7 +115,7 @@ def get_gmail(URL):
     r = requests.get(URL)
        
     if r.status_code == 401:
-       logging.warning("login [%s] or password [%s] is incorrect\n%s" %
+       print("login [%s] or password [%s] is incorrect\n%s" %
        (user, passwd, 'Also try enable "Allow less secure apps" on https://myaccount.google.com/lesssecureapps'))
        return False
        
@@ -139,7 +139,7 @@ def get_gmail(URL):
         return contents
 
     elif int(fullcount) != 0:
-        logging.critical("gmail format xml is changed")
+        print("gmail format xml is changed")
         send_noti("Gmail error:", "xml format is broken", "critical")
     else:
         logging.info("new mail not found")
