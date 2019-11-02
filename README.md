@@ -16,7 +16,7 @@ Opportunities and script logic:
 4. Run [gmail.exe](/gmail.exe)
 5. (Optional) Run `add task.bat` as __Administrator option__.
 
-## (Optional) Compile for Windows:
+#### (Optional) Compile for Windows:
 1. Install Python => 3.6
 1. Copy repo `$ git clone https://github.com/Artlant/gmail-check.git`
 2. Run `$ pip install -r requirements.txt` in `gmail-check` folder
@@ -31,6 +31,13 @@ Opportunities and script logic:
 5. Change in `gmail.cfg` you `login` and `pass` from gmail account
 6. Run `$ ./gmail.py`
 
+__//period call script should be implemented you__. For example in linux:
+```
+watch -n 300./gmail.py
+```
+where `-n sec` - every sec-seconds
+
+
 ### Start arguments
 ```
 ./gmail.py -h
@@ -41,12 +48,6 @@ optional arguments:
   -l, --log               show log info
   -c file, --config file  patch to a config file
 ```
-
-__//period call script should be implemented you__. For example in linux:
-```
-watch -n 300./gmail.py
-```
-where `-n sec` - every sec-seconds
 
 ### License
 [![MIT License](https://img.shields.io/badge/license-MIT-007EC7.svg?style=flat-square)](/LICENSE)
