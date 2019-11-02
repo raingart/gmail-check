@@ -3,31 +3,42 @@ Python script to check for new unread GMAIL mail. And the subsequent opening of 
 
 Opportunities and script logic:
 - Checking for new email/s
-- The conclusion of the system message
+- (Optional) The conclusion of the system message
 - And the opening new mail/s in a browser
 
-### Requirements
+### Requirements (for run [gmail.py](/gmail.py))
 > - python => 3.0
-  - configparser
-  - feedparser
-  - urllib
 
-### Installation Instructions
-1. Copy files [gmail.py](/gmail.py), [conf](/gmail.cfg)
-2. Make sure the script is executable by running `chmod +x ./gmail.py`
+### Installation for Windows
+1. open https://myaccount.google.com/lesssecureapps and set `Allow less secure apps: ON`
+2. Copy file [gmail.exe](/gmail.exe) and [gmail.cfg](/gmail.cfg)
 3. Change in `gmail.cfg` you `login` and `pass` from gmail account
-4. (optional) Change in file `gmail.py` variable `configFilePath` from you path conf
-5. Open https://myaccount.google.com/lesssecureapps and set `Allow less secure apps: ON`
+4. Run [gmail.exe](/gmail.exe)
+5. (Optional) Run `add task.bat` as __Administrator option__.
+
+## (Optional) Compile for Windows:
+1. Install Python => 3.6
+1. Copy repo `$ git clone https://github.com/Artlant/gmail-check.git`
+2. Run `$ pip install -r requirements.txt` in `gmail-check` folder
+3. Install [Auto PY to EXE](https://github.com/brentvollebregt/auto-py-to-exe)
+4. Convert [gmail.py](/gmail.py) in "Auto PY to EXE and Convert"
+
+### Installation for Linux
+1. Copy repo `$ git clone https://github.com/Artlant/gmail-check.git`
+2. Run `$ pip install -r requirements.txt`
+3. open https://myaccount.google.com/lesssecureapps and set `Allow less secure apps: ON`
+4. Make sure the script is executable by running `chmod +x ./gmail.py`
+5. Change in `gmail.cfg` you `login` and `pass` from gmail account
 6. Run `$ ./gmail.py`
 
 ### Start arguments
 ```
 ./gmail.py -h
-usage: gmail.py [-h] [-d] [-c CONFIG]
+usage: gmail.py [-h] [-l] [-c CONFIG]
 
 optional arguments:
   -h, --help              show this help message and exit
-  -d, --debug             show log info
+  -l, --log               show log info
   -c file, --config file  patch to a config file
 ```
 

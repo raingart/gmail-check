@@ -5,7 +5,7 @@
 #  MAX_OPEN_EMAIL = 5
 # _____________________________________________________________________________
 
-
+# https://pypi.org/search/?q=NAME
 import logging
 import sys
 import os
@@ -15,6 +15,8 @@ import feedparser
 import webbrowser
 import requests
 from urllib import parse
+from plyer import notification
+from plyer.utils import platform
 
 
 def get_args():
@@ -23,7 +25,6 @@ def get_args():
         description='In interactive mode you able to manage your keys.'
     )
     parser.add_argument(
-        # ,nargs='?', default=CONFIG_PATH,
         '-c', '--config', help='Specify a config file.'
     )
     parser.add_argument(
@@ -45,6 +46,7 @@ def parse_config(PATH="./gmail.cfg", CONFIG_SECTION='profile'):
     except NameError: CONFIG_PATH = PATH
     # import configparser
     # HOME = os.environ['HOME']
+	# Linux /HOME dit
     if CONFIG_PATH and CONFIG_PATH.startswith('~'):
         CONFIG_PATH = os.path.expanduser("~") + CONFIG_PATH[1:]
     
@@ -56,6 +58,9 @@ def parse_config(PATH="./gmail.cfg", CONFIG_SECTION='profile'):
         user = config_file.get(CONFIG_SECTION, 'user')
         global passwd
         passwd = config_file.get(CONFIG_SECTION, 'passwd')
+        
+        global notify
+        notify = config_file.getboolean(CONFIG_SECTION, 'notify')
 
         logging.info("reading config file: %s" % CONFIG_PATH)
 
@@ -69,17 +74,19 @@ def get_mail_url(USER, PWD):
     return 'https://%s:%s@mail.google.com/mail/feed/atom' % (USER, PWD)
 
 
-def send_noti(HEAD="mail notify", MSG="test", LEVEL="low"):
-    level = {
-        LEVEL == 'low': "low",
-        LEVEL == 'normal': "normal",
-        LEVEL == 'critical': "critical"
-    }[True]
-    # import os
-    # --icon=mail-forward
-    os.system('notify-send "%s" "%s" -u %m' % (HEAD, MSG, level))
-
-
+def send_notify(TITLE="mail notify", MESSAGE="test"):
+	#from plyer import notification
+	#from plyer.utils import platform
+    global notify
+    if notify:
+       notification.notify(
+           title=TITLE,
+           message=MESSAGE,
+		   app_icon=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icon') + '.ico' if platform == "win" else '.png', # On Windows ".ico" is required, on Linux ".png"
+           timeout=7  # seconds
+       )
+	
+	
 def open_rss_link(URL):
    #  import feedparser
     try:
@@ -97,16 +104,13 @@ def open_rss_link(URL):
 
     else:
        for entry in rss.entries:
-          logging.info("Title: %s" % entry.title)
-          logging.info("link: %s" % entry.link)
-             
           f=parse.parse_qsl(parse.urlsplit(entry.link).query)
           message_id=dict(f)['message_id']
           logging.info("message_id: %s" % message_id)
+          logging.info("Title: %s" % entry.title)
+          logging.info("link: %s" % entry.link)
           
           webbrowser.open('https://mail.google.com/mail/u/0/h/?&v=c&th=%s' % message_id)
-
-
     # return entry.link
 
 
@@ -120,27 +124,26 @@ def get_gmail(URL):
        return False
        
     elif r.status_code != 200:
-       logging.warning("Requests error [%s] - %s" % (r.status_code, URL))
+       print("Requests error [%s] - %s" % (r.status_code, URL))
        return False
        
     contents = r.text
     ifrom=contents.index('<fullcount>') + 11
     ito=contents.index('</fullcount>')
 
-    fullcount=contents[ifrom:ito]
+    mail_count=int(contents[ifrom:ito])
 
-    if int(fullcount) > 0:
-        ed="mail"
-        if int(fullcount) > 1:
-            ed += "s"
+    if mail_count > 0:
+        mail_ed="mail"
+        if mail_count > 1:
+            mail_ed += "s"
 
-        #  send_noti("Gmail", "%s %s" % (fullcount, ed))
-        print(" %s" % fullcount)
+        send_notify("Gmail", "%d new %s" % (mail_count, mail_ed))
+        print(" %s" % mail_count)
         return contents
 
-    elif int(fullcount) != 0:
+    elif mail_count != 0:
         print("gmail format xml is changed")
-        send_noti("Gmail error:", "xml format is broken", "critical")
     else:
         logging.info("new mail not found")
 
@@ -159,7 +162,8 @@ def main():
         logging.info("completed.")
 
     except IOError as e:
-        print("I/O error: ".format(e))
+        #print("I/O error: %s" % format(e))
+        print("Failed to establish a new connection")
 
     #  hide error msg
     #  finally:
