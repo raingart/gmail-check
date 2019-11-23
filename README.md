@@ -17,15 +17,15 @@ Opportunities and script logic:
 5. (Optional) Run `add task.bat` as __Administrator option__.
 
 #### (Optional) Compile for Windows:
-1. Install Python => 3.6
-1. Copy repo `$ git clone https://github.com/Artlant/gmail-check.git`
+1. Install Python => 3.6 and `python-pip`
+1. Copy repo `$ git clone https://github.com/Artlant/gmail-check.git` or "Download zip"
 2. Run `$ pip install -r requirements.txt` in `gmail-check` folder
 3. Install [Auto PY to EXE](https://github.com/brentvollebregt/auto-py-to-exe)
 4. Convert [gmail.py](/gmail.py) in "Auto PY to EXE and Convert"
 
 ### Installation for Linux
-1. Copy repo `$ git clone https://github.com/Artlant/gmail-check.git`
-2. Run `$ pip install -r requirements.txt`
+1. Copy repo `$ git clone https://github.com/Artlant/gmail-check.git` or "Download zip"
+2. Run `$ sudo pip install -r requirements.txt` in `gmail-check` folder
 3. open https://myaccount.google.com/lesssecureapps and set `Allow less secure apps: ON`
 4. Make sure the script is executable by running `chmod +x ./gmail.py`
 5. Change in `gmail.cfg` you `login` and `pass` from gmail account
